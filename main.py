@@ -27,12 +27,12 @@ def to_csv_format(x):
 
 
 sc = SparkContext('local', 'spark-mini-project')
-raw_rdd = sc.textFile('data.csv')
+raw_rdd = sc.textFile('/user/admin/input/data.csv')
 
 vin_kv = raw_rdd.map(lambda x: extract_vin_key_value(x))
 enhance_make = vin_kv.groupByKey().flatMap(lambda kv: populate_make(kv[1]))
 make_kv = enhance_make.map(lambda x: extract_make_key_value(x))
 accident_counts = make_kv.reduceByKey(add).map(to_csv_format)
-accident_counts.saveAsTextFile("out.txt")
+accident_counts.saveAsTextFile("/user/admin/output/")
 
 
