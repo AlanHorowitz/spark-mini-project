@@ -1,6 +1,6 @@
 ## Spark Mini Project
 
-### Run two streaming map reduce jobs in Hortonworks sandbox
+### Perform spark transformations in Hortonworks sandbox
 
 ### Demonstration instructions
 
