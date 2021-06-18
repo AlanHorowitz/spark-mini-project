@@ -10,6 +10,7 @@ def extract_vin_key_value(line):
 
 
 def populate_make(values):
+    """ Return all accidents for VIN, with make and year extracted from initial sale."""
     make, year = '', ''
     for value in values:
         if value[0] == 'I':
@@ -29,9 +30,13 @@ def to_csv_format(x):
 sc = SparkContext('local', 'spark-mini-project')
 raw_rdd = sc.textFile('/user/admin/input/data.csv')
 
+# key = VIN; value = Incident type, make, year
 vin_kv = raw_rdd.map(lambda x: extract_vin_key_value(x))
+# filter only accidents per VIN, including year and make
 enhance_make = vin_kv.groupByKey().flatMap(lambda kv: populate_make(kv[1]))
+# form output Key and add 1 as base to count them
 make_kv = enhance_make.map(lambda x: extract_make_key_value(x))
+# Count accidents by make, model and convert to csv format
 accident_counts = make_kv.reduceByKey(add).map(to_csv_format)
 accident_counts.saveAsTextFile("/user/admin/output/")
 
